@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+title: "single-diode: single diode photovoltaic modelling in Python"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: Mann
+    given-names: Valentin
+repository-code: "https://github.com/valentinmann/single-diode"
+license: MIT
+version: 0.1.0
+date-released: "2026-09-27"
+keywords:
+  - photovoltaics
+  - single-diode model
+  - parameter extraction
+  - Lambert W
+references:
+  - type: article
+    title: "Improvement and validation of a model for photovoltaic array performance"
+    authors:
+      - family-names: "De Soto"
+        given-names: W.
+      - family-names: Klein
+        given-names: S. A.
+      - family-names: Beckman
+        given-names: W. A.
+    journal: "Solar Energy"
+    volume: 80
+    issue: 1
+    start: 78
+    end: 88
+    year: 2006
+    doi: "10.1016/j.solener.2005.06.010"
