@@ -1,10 +1,8 @@
 # single-diode
 
-[![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](pyproject.toml)
+[![CI](https://github.com/valentinmann/single-diode/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/valentinmann/single-diode/actions/workflows/ci.yml?query=branch%3Amain)
+[![Python 3.10 to 3.13](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Checked with mypy](https://img.shields.io/badge/mypy-checked-2a6db2)](pyproject.toml)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 A solar module datasheet gives you four numbers and two temperature
 coefficients. The single diode equivalent circuit needs five parameters. This
@@ -16,7 +14,12 @@ irradiance and cell temperature.
 ## Run it
 
 ```bash
-pip install -e ".[dev]" && python examples/datasheet_to_iv.py
+git clone https://github.com/valentinmann/single-diode.git
+cd single-diode
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
+python examples/datasheet_to_iv.py
 ```
 
 A few seconds, no data to download. It fits a real published module, checks
@@ -78,9 +81,15 @@ converging for `I0 = 1e-10 A` and failing for `8e-10 A`.
 ## What the tests caught
 
 ```bash
-pytest       # 154 tests, including the docstring examples
-nox          # or: lint, strict type check and tests, exactly what CI runs
+pytest                                  # 154 tests, including the docstring examples
+pytest --cov --cov-report=term-missing  # 97% line and branch coverage
+nox                                     # lint, strict types and tests: exactly what CI runs
 ```
+
+Those two numbers are what those two commands print on a clean clone. There is
+no coverage badge because coverage is not published anywhere: CI keeps the
+report as a build artifact rather than sending it to a third party, and a
+badge nobody can reproduce is worth less than a command anybody can run.
 
 Four things, each of which produced plausible output and none of which a
 smoke test would have found. The first three were caught locally; the fourth
@@ -154,7 +163,7 @@ Everything CI runs is one command locally, through
 ```bash
 nox              # lint, types, tests
 nox -s tests     # tests on every installed interpreter, 3.10 to 3.13
-nox -s coverage  # 97% line and branch coverage at the time of writing
+nox -s coverage  # the coverage report quoted above, through nox
 nox -s build     # build the distributions and validate their metadata
 ```
 

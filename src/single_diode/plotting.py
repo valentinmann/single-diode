@@ -135,7 +135,14 @@ def plot_overview(
     axp.set_ylim(bottom=0)
     ax.grid(color="#EDEDED", linewidth=0.8)
     ax.set_axisbelow(True)
-    ax.legend(loc="lower left", fontsize=8, framealpha=0.95)
+    # The legend is attached to the twin, not to ``ax``. A twinned axes is
+    # drawn on top of the one it was made from, so a legend on ``ax`` sits
+    # underneath the dotted power curves whatever its zorder or framealpha -
+    # which is exactly what it did: the dotted lines crossed the labels. It
+    # only showed up when the figure was inspected at the width it is actually
+    # rendered at, rather than at full resolution.
+    handles, labels = ax.get_legend_handles_labels()
+    axp.legend(handles, labels, loc="lower left", fontsize=8, framealpha=1.0)
     ax.set_title(f"{sheet.name}: fitted model vs datasheet", fontsize=11, loc="left")
 
     # ---------------- right: the overflow ceiling ----------------

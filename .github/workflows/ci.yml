@@ -51,8 +51,8 @@ jobs:
       - name: Test
         run: pytest --cov --cov-report=term-missing --cov-report=xml
 
-      # upload-artifact v4 errors on duplicate names instead of merging, so the
-      # name carries the job and matrix index.
+      # An artifact name must be unique within a run unless `overwrite` is set,
+      # so the name carries the job and the matrix index.
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:

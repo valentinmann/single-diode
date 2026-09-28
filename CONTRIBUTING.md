@@ -37,8 +37,8 @@ mypy
 ## What a change needs
 
 - **A test that fails before it and passes after.** This package exists
-  because its tests caught three real bugs that produced plausible output;
-  that is the standard to hold.
+  because its tests caught four separate defects, every one of which produced
+  plausible output; that is the standard to hold.
 - **Physics justified in the docstring, not just in the diff.** If a constant
   or a formulation comes from a paper, name the paper.
 - **Claims that stay falsifiable.** Several docstrings state a measured

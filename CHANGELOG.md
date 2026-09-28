@@ -6,6 +6,23 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- The overview figure drew the dotted power curves across the left panel's
+  legend. The legend was attached to the primary axes and the curves to its
+  twin, and a twinned axes is drawn on top of the one it was made from
+  whatever the zorder or the frame opacity, so the labels were crossed by
+  lines. It was only visible at the width the figure is actually rendered at.
+  The legend now sits on the twin.
+
+### Changed
+
+- The README quickstart is a complete sequence, from `git clone` to the first
+  figure, verified end to end in a fresh clone and a fresh virtual environment.
+- The badges are absolute URLs, so they still resolve where the README is read
+  outside github.com, and the CI badge reports `main` explicitly. The two
+  static badges that only restated what the Development section says are gone.
+
 ## [0.1.0] - 2026-09-24
 
 First release.
