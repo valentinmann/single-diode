@@ -23,9 +23,9 @@ python examples/datasheet_to_iv.py
 ```
 
 A few seconds, no data to download. It fits a real published module, checks
-the fit against the published values, shows what the module does when it is
-hot or shaded, runs two maximum power point trackers, and writes the figure
-above.
+the fit against the published values, shows what the model predicts when the
+module is hot or shaded, runs two maximum power point trackers, and writes the
+figure above.
 
 ```
 [2/4] Reproducing the published values
@@ -36,10 +36,16 @@ above.
   Pmp [W]   model  219.9610   published  219.9610   error  0.0000 %
 ```
 
-Away from the datasheet, where nothing was fitted, the model reproduces the
-published temperature coefficients to better than a percent and the fill
-factor rises as the light falls, which is the right physics for the right
-reason.
+Those zeros show that the solver converged, not that the model is right. The
+fit is required to pass through `(0, Isc)`, `(Voc, 0)` and `(Vmp, Imp)` and to
+reach its maximum power at the last, and `Pmp` is `Imp` times `Vmp`, so every
+converged fit reproduces all five by construction.
+
+Away from datasheet conditions the model moves the right way: open-circuit
+voltage falls and short-circuit current rises at the published temperature
+rates, and the fill factor improves as the light falls. That is consistency
+rather than validation, because both rates were inputs, one to the fit and
+one to the translation.
 
 ## What is actually hard here
 
@@ -189,6 +195,12 @@ Commission module database. Everything else in the test corpus is synthetic
 and generated from known parameters, which is deliberate: a datasheet gives
 four points and no ground truth, so a fit to one can only be checked against
 what it was handed, while a synthetic module has an exact answer to recover.
+
+What none of this provides is validation against measurement. Nothing here
+compares the model with a measured I-V curve, a flash test, or the module's
+behaviour at another irradiance or temperature, so the round trips establish
+that the fitting procedure is correct, not that a single diode with De Soto
+translation describes this module away from its datasheet.
 
 ## Provenance
 
