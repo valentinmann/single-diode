@@ -16,13 +16,19 @@ Why this is not simply "call a root finder"
 -------------------------------------------
 
 Handing those five equations to a solver from the textbook starting estimate
-fails on part of any real corpus: two modules in seven here, including the one
-whose numbers come from a manufacturer rather than from this package's own
-tests. This is a known difficulty rather than a peculiarity of this
-implementation - pvlib's own ``fit_desoto`` carried a convergence failure of
-exactly this kind (pvlib-python issue #1014), converging for a saturation
-current of 1e-10 A and failing for 8e-10 A, with the solver reporting that
-"the iteration is not making good progress".
+is unreliable, and unreliable in a particularly awkward way: whether it
+converges depends on the machine. The same module, the same code and the same
+starting point fail on one platform and converge on another, because
+``scipy.optimize.root(method="lm")`` is MINPACK and MINPACK compiled against a
+different LAPACK takes a different path out of a badly conditioned start. This
+was measured the hard way - the test asserting that a single start fails
+passed locally and broke CI on two of the three platforms.
+
+This is a known difficulty rather than a peculiarity of this implementation:
+pvlib's own ``fit_desoto`` carried a convergence failure of exactly this kind
+(pvlib-python issue #1014), converging for a saturation current of 1e-10 A and
+failing for 8e-10 A, with the solver reporting that "the iteration is not
+making good progress".
 
 The cause is that ``I0`` enters through ``exp(V/a)``, so the two are coupled
 exponentially. Estimating ``a`` from the datasheet by the usual closed form,
@@ -37,7 +43,8 @@ A multi-start over the ideality factor. ``a = n * Ns * k * T / q`` with ``n``
 between roughly 0.8 and 2 for any silicon module, so the one badly known
 quantity lives on a short, physically bounded interval. Starting from each
 ``n`` in turn and keeping the first solve that converges to a physical answer
-turns a fragile fit into a reliable one.
+turns a fit whose success depends on which BLAS was linked into one that
+converges on every platform tested.
 
 A note on what did *not* fix it: this module was first written in the belief
 that the problem was scaling, and that solving for ``log(I0)`` and

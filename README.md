@@ -64,6 +64,12 @@ and comes out 50 to 130% high - implies an `I0` wrong by four orders of
 magnitude. The fix is a multi-start over the ideality factor, which is the one
 poorly known quantity and lives on a short physical interval.
 
+Worse, whether a single start converges depends on the machine:
+`scipy.optimize.root(method="lm")` is MINPACK, and MINPACK compiled against a
+different LAPACK takes a different path out of a badly conditioned start. A
+fit whose success depends on which BLAS was linked is not one to rely on,
+which is the argument for the multi-start.
+
 This is a real difficulty, not a self-inflicted one: pvlib's `fit_desoto`
 carried a convergence failure of the same kind
 ([pvlib-python#1014](https://github.com/pvlib/pvlib-python/issues/1014)),
@@ -72,12 +78,13 @@ converging for `I0 = 1e-10 A` and failing for `8e-10 A`.
 ## What the tests caught
 
 ```bash
-pytest       # 155 tests, including the docstring examples
+pytest       # 154 tests, including the docstring examples
 nox          # or: lint, strict type check and tests, exactly what CI runs
 ```
 
-Three things, each of which produced plausible output and none of which a
-smoke test would have found.
+Four things, each of which produced plausible output and none of which a
+smoke test would have found. The first three were caught locally; the fourth
+only by running the suite on three operating systems.
 
 1. **A silently wrong Lambert W.** The iteration started from the omega
    constant in the mid range, which is a fine guess near `x = 0` and hopeless
@@ -102,6 +109,15 @@ smoke test would have found.
    an option, the multi-start is what is defended, and
    [`tests/test_extract.py`](tests/test_extract.py) measures the claim so it
    stays falsifiable.
+
+4. **A test that was only true on my machine.** One test asserted that a
+   single start from the textbook estimate *fails*. It did, locally, and it
+   survived a deliberate probe that perturbed the inputs. Then CI failed it on
+   Linux and macOS, where the same solve converges - the probe had varied the
+   inputs but not the linear algebra backend. Asserting that a numerical
+   solver fails is not portable. The test now asserts the portable half:
+   wherever a single start succeeds the multi-start agrees with it, and the
+   multi-start succeeds everywhere.
 
 The same discipline is applied where it is less flattering. Incremental
 conductance is usually described as immune to changing irradiance; measured

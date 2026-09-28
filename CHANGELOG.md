@@ -27,7 +27,7 @@ First release.
   model.
 - `datasheet`: published values validated at construction, with the Canadian
   Solar CS5P-220M as the worked example.
-- 155 tests, including the docstring examples, at 97% line and branch
+- 154 tests, including the docstring examples, at 97% line and branch
   coverage.
 - CI across Python 3.10 to 3.13 on Linux, macOS and Windows, plus jobs that
   lint, type-check in strict mode, build and validate the distributions, and
